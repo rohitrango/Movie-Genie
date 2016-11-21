@@ -277,7 +277,6 @@ public class PrefActivity extends AppCompatActivity {
                 protected Map<String, String> getParams() {
                     Map<String,String> mParams = new HashMap<String,String>();
                     mParams.put("fb_id",final_fbid);
-
                     return mParams;
                 }
             };

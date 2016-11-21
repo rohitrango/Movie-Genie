@@ -94,6 +94,59 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     AccessToken accessToken;
     CallbackManager callbackManager;
     public String fb_id;
+
+    public class Logger implements Runnable {
+
+        @Override
+        public void run() {
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            String url = "http://10.196.4.62:8000/MovieApp/checkUser";
+//                String url = R.string.api_url + "/MovieApp/checkUser";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                Log.e(response,"response");
+                                String status = jsonObject.getString("status");
+                                Intent intent;
+                                if(status == "yes") {
+                                    intent = new Intent(getApplicationContext(),MainActivity.class);
+                                }
+                                else {
+                                    intent = new Intent(getApplicationContext(),PrefActivity.class);
+                                }
+                                intent.putExtra("fb_id",fb_id);
+                                startActivity(intent);
+                                finish();
+                            }
+                            catch(Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
+                            Toast.makeText(getApplicationContext(),"Some error occured!",Toast.LENGTH_SHORT).show();
+                        }
+                    }){
+                @Override
+                public Map<String, String> getParams() {
+                    Map<String,String> mParams = new HashMap<String, String>();
+                    Log.e("FB ID inside send",fb_id);
+                    mParams.put("fb_id",fb_id);
+                    return mParams;
+                }
+            };
+            // Add the request to the RequestQueue.
+            requestQueue.add(stringRequest);
+            Log.e("LOGGED","logged");
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +164,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         if(accessToken != null) {
             if (accessToken.getToken() != null && !accessToken.isExpired()) {
+                Log.d("STARTING MAIN:","main");
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -120,63 +174,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // App code
-                ProfileTracker mProfileTracker = new ProfileTracker() {
-                    @Override
-                    protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                        Log.v("facebook - profile", profile2.getFirstName());
-                        Log.v("facebook - profile", profile2.getId());
-                        fb_id = profile2.getId();
-                        this.stopTracking();
+               if(Profile.getCurrentProfile() == null) {
+                   // App code
+                   ProfileTracker mProfileTracker = new ProfileTracker() {
+                       @Override
+                       protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                           Log.v("facebook - profile", profile2.getFirstName());
+                           Log.v("facebook - profile", profile2.getId());
+                           fb_id = profile2.getId();
+                           this.stopTracking();
 //                        AccessToken accessToken = loginResult.getAccessToken();
 //                        Profile profile = Profile.getCurrentProfile();//Or use the profile2 variable
-                    }
-                };
-                mProfileTracker.startTracking();
+                       }
+                   };
+                   mProfileTracker.startTracking();
+               }
+                else {
+                   Profile profile = Profile.getCurrentProfile();
+                   fb_id = profile.getId();
+                   Log.e(profile.getId(),"IDdd");
 
-                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                String url = "http://10.196.4.62:8000/MovieApp/checkUser";
-//                String url = R.string.api_url + "/MovieApp/checkUser";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    Log.e(response,"response");
-                                    String status = jsonObject.getString("status");
-                                    Intent intent;
-                                    if(status == "yes") {
-                                        intent = new Intent(getApplicationContext(),MainActivity.class);
-                                    }
-                                    else {
-                                        intent = new Intent(getApplicationContext(),PrefActivity.class);
-                                    }
-                                    intent.putExtra("fb_id",fb_id);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                catch(Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getApplicationContext(),"Some error occured!",Toast.LENGTH_SHORT).show();
-                            }
-                }){
-                    @Override
-                    public Map<String, String> getParams() {
-                        Map<String,String> mParams = new HashMap<String, String>();
-                        mParams.put("fb_id",fb_id);
-                        return mParams;
-                    }
-                };
-                // Add the request to the RequestQueue.
-                requestQueue.add(stringRequest);
-                Log.e("LOGGED","logged");
+                   Logger logger = new Logger();
+                   new Thread(logger,"logger").start();
+               }
+
             }
 
             @Override

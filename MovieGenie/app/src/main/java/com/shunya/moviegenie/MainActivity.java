@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
 
         public void run() {
 
-            String json = "{}";
+            String json = "[]";
 
             try {
                 ViewGroup movielist = (ViewGroup)findViewById(R.id.movieList);
@@ -94,13 +94,11 @@ public class MainActivity extends AppCompatActivity
 
         if(accessToken == null) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
             finish();
         }
 
         else if(accessToken.getToken() == null || accessToken.isExpired()) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
             finish();
         }
 
