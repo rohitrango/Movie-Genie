@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // check for the accesstoken and whether its valid
 
         CallbackManager callbackManager = CallbackManager.Factory.create();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -43,11 +44,11 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
+        // set the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
+        // layout drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    // on back press
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // create the options
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    // handle
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -93,21 +97,20 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_logout) {
+        if (id == R.id.nav_logout) {
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
             startActivity(intent);
         }
+        else if (id == R.id.preferences) {
+            Intent intent = new Intent(getApplicationContext(),PrefActivity.class);
+            startActivity(intent);
+        }
+        else if(id == R.id.chatBoxList) {
+            Intent intent = new Intent(getApplicationContext(),ChatBoxListActivity.class);
+            startActivity(intent);
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
