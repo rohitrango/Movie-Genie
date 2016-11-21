@@ -91,10 +91,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         loginButton.setReadPermissions("email");
         accessToken = AccessToken.getCurrentAccessToken();
-        if(accessToken.getToken() != null && !accessToken.isExpired()) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
+
+        if(accessToken != null) {
+            if (accessToken.getToken() != null && !accessToken.isExpired()) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
