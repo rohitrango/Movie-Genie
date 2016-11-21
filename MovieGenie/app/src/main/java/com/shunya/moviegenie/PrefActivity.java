@@ -39,6 +39,7 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +56,8 @@ public class PrefActivity extends AppCompatActivity {
     public Button submitButton;
     public int actorselected,genresselected;
     public String ID;
+    public String genresName[];
+    public int actorsID[];
     public String fb_id;
 
 
@@ -172,22 +175,24 @@ public class PrefActivity extends AppCompatActivity {
                     else {
                         Log.d("Here","Sending request");
 //                    Toast.makeText(getApplicationContext(),"Preferences updated!",Toast.LENGTH_SHORT).show();
-                        String genresName[] = new String[genresselected];
+                        genresName = new String[genresselected];
                         int ctr = 0;
                         for(int i=0;i<prefView.getChildCount();i++) {
                             CheckBox c = (CheckBox)prefView.getChildAt(i);
-                            if(c.isSelected()) {
+                            if(c.isChecked()) {
                                 genresName[ctr] = c.getText().toString();
+//                                Log.d("genre:",genresName[ctr]);
                                 ctr++;
                             }
                         }
 
-                        int actorsID[] = new int[actorselected];
+                        actorsID = new int[actorselected];
                         ctr = 0;
                         for(int i=0;i<actorView.getChildCount();i++) {
                             CheckBox c = (CheckBox)actorView.getChildAt(i);
-                            if(c.isSelected()) {
+                            if(c.isChecked()) {
                                 actorsID[ctr] = i;
+//                                Log.d("ACTORSID:",Integer.toString(actorsID[ctr]));
                                 ctr++;
                             }
                         }
@@ -211,7 +216,6 @@ public class PrefActivity extends AppCompatActivity {
 
         }
     }
-
 
     @Override
     public void onBackPressed()
@@ -275,8 +279,13 @@ public class PrefActivity extends AppCompatActivity {
             }){
                 @Override
                 protected Map<String, String> getParams() {
+                    Gson gson = new Gson();
+                    String actors = gson.toJson(actorsID);
+                    String genres = gson.toJson(genresName);
                     Map<String,String> mParams = new HashMap<String,String>();
                     mParams.put("fb_id",final_fbid);
+                    mParams.put("actors_id",actors);
+                    mParams.put("genres_list",genres);
                     return mParams;
                 }
             };
