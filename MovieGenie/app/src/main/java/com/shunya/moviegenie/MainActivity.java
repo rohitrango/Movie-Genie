@@ -1,9 +1,12 @@
 package com.shunya.moviegenie;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,14 +16,68 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    ViewGroup.LayoutParams layoutParams,textBoxParams;
+
+    public class MovieListGetter implements Runnable {
+
+        public void run() {
+
+            String json = "{}";
+
+            try {
+                ViewGroup movielist = (ViewGroup)findViewById(R.id.movieList);
+                JSONArray response = new JSONArray(json);
+
+                for(int i=0;i<response.length();i++) {
+
+                    Log.e(Integer.toString(i),"d");
+                    LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                    View childLayout = inflater.inflate(R.layout.movie_detail_box,null);
+
+                    JSONObject responseObj = (JSONObject)(response.get(i));
+
+                    // name
+                    TextView t = (TextView)(childLayout.findViewById(R.id.movieName));
+                    t.setText(  responseObj.getString("name") );
+                    t.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // add movie listener here
+//                            String moviename =
+                        }
+                    });
+
+//                    // rating
+                    t = (TextView)childLayout.findViewById(R.id.rating);
+                    t.setText("Rating: " + Integer.toString(responseObj.getInt("ratings")) );
+                    movielist.addView(childLayout);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public MovieListGetter movieListGetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +85,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // check for the accesstoken and whether its valid
+        layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        textBoxParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
 
         CallbackManager callbackManager = CallbackManager.Factory.create();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -38,7 +98,7 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
-        if(accessToken.getToken() == null || accessToken.isExpired()) {
+        else if(accessToken.getToken() == null || accessToken.isExpired()) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
@@ -54,6 +114,11 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+
+        movieListGetter = new MovieListGetter();
+        new Thread(movieListGetter,"mvG").start();
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -100,10 +165,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_logout) {
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-            startActivity(intent);
-        }
-        else if (id == R.id.preferences) {
-            Intent intent = new Intent(getApplicationContext(),PrefActivity.class);
             startActivity(intent);
         }
         else if(id == R.id.chatBoxList) {

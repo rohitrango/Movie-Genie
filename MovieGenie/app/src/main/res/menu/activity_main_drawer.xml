@@ -4,9 +4,6 @@
 
     <item android:title="Options">
         <menu>
-            <item
-                android:id="@+id/preferences"
-                android:title="Preferences" />
 
             <item
                 android:id="@+id/chatBoxList"

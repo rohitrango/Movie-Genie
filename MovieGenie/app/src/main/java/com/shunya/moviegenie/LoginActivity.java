@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,28 +26,44 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * A login screen that offers login via email/password.
@@ -76,7 +93,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private LoginButton loginButton;
     AccessToken accessToken;
     CallbackManager callbackManager;
-
+    public String fb_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,10 +121,61 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
-//                Toast.makeText(getApplicationContext(),"logged in",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
+                ProfileTracker mProfileTracker = new ProfileTracker() {
+                    @Override
+                    protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                        Log.v("facebook - profile", profile2.getFirstName());
+                        Log.v("facebook - profile", profile2.getId());
+                        fb_id = profile2.getId();
+                        this.stopTracking();
+//                        AccessToken accessToken = loginResult.getAccessToken();
+//                        Profile profile = Profile.getCurrentProfile();//Or use the profile2 variable
+                    }
+                };
+                mProfileTracker.startTracking();
+
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                String url = "http://10.196.4.62:8000/MovieApp/checkUser";
+//                String url = R.string.api_url + "/MovieApp/checkUser";
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    Log.e(response,"response");
+                                    String status = jsonObject.getString("status");
+                                    Intent intent;
+                                    if(status == "yes") {
+                                        intent = new Intent(getApplicationContext(),MainActivity.class);
+                                    }
+                                    else {
+                                        intent = new Intent(getApplicationContext(),PrefActivity.class);
+                                    }
+                                    intent.putExtra("fb_id",fb_id);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                catch(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(),"Some error occured!",Toast.LENGTH_SHORT).show();
+                            }
+                }){
+                    @Override
+                    public Map<String, String> getParams() {
+                        Map<String,String> mParams = new HashMap<String, String>();
+                        mParams.put("fb_id",fb_id);
+                        return mParams;
+                    }
+                };
+                // Add the request to the RequestQueue.
+                requestQueue.add(stringRequest);
                 Log.e("LOGGED","logged");
             }
 
