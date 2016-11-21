@@ -3,6 +3,8 @@ package com.shunya.moviegenie;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -36,6 +38,7 @@ import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -71,6 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private LoginButton loginButton;
+    AccessToken accessToken;
     CallbackManager callbackManager;
 
     @Override
@@ -86,30 +90,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         loginButton = (LoginButton)findViewById(R.id.login_button);
 
         loginButton.setReadPermissions("email");
-
+        accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken.getToken() != null && !accessToken.isExpired()) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
+//                Toast.makeText(getApplicationContext(),"logged in",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
                 Log.e("LOGGED","logged");
-                Toast.makeText(getApplicationContext(),"Some text",Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onCancel() {
-                Toast.makeText(getApplicationContext(),"cancel",Toast.LENGTH_LONG).show();
                 Log.e("cancelled","cancelled");
                 // App code
             }
 
             @Override
             public void onError(FacebookException exception) {
-                Toast.makeText(getApplicationContext(),"error",Toast.LENGTH_LONG).show();
                 // App code
             }
         });
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
