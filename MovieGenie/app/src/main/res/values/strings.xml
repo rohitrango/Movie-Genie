@@ -23,6 +23,5 @@
     <string name="title_activity_movie_detail">Details for Movie</string>
     <string name="title_activity_chat_box_detail">ChatBoxDetailActivity</string>
     <string name="title_activity_notifications">NotificationsActivity</string>
-    <!--<string name="api_url">http://shunyaapp.azurewebsites.net</string>-->
-    <string name="api_url">http://10.196.4.62:8000/MovieApp</string>
+    <string name="api_url" formatted="false">"http://shunyaapp.azurewebsites.net"</string>
 </resources>

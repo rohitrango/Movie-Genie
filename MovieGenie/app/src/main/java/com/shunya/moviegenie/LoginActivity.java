@@ -100,8 +100,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         public void run() {
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-            String url = "http://10.196.4.62:8000/MovieApp/checkUser";
-//                String url = R.string.api_url + "/MovieApp/checkUser";
+            String url = "http://shunyaapp.azurewebsites.net"+"/MovieApp/checkUser";
+//                String url = "http://shunyaapp.azurewebsites.net" + "/MovieApp/checkUser";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         @Override

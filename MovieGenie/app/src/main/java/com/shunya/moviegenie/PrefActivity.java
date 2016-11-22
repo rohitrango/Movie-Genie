@@ -73,7 +73,7 @@ public class PrefActivity extends AppCompatActivity {
         public void run() {
             // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://10.196.4.62:8000"+"/MovieApp/getAllGenres";
+            String url ="http://shunyaapp.azurewebsites.net"+"/MovieApp/getAllGenres";
 
             // Request a string response from the provided URL.
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -118,7 +118,7 @@ public class PrefActivity extends AppCompatActivity {
             // ACTOR list
 
             RequestQueue q2 = Volley.newRequestQueue(getApplicationContext());
-            url = "http://10.196.4.62:8000"+"/MovieApp/getAllActors";
+            url = "http://shunyaapp.azurewebsites.net"+"/MovieApp/getAllActors";
 
             // Request a string response from the provided URL.
             stringRequest = new StringRequest(Request.Method.POST, url,
@@ -240,7 +240,7 @@ public class PrefActivity extends AppCompatActivity {
 
             Log.d(ID,"FB ID here -");
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://10.196.4.62:8000/MovieApp"+"/createUser";
+            String url ="http://shunyaapp.azurewebsites.net"+"/MovieApp/createUser";
 //            Toast.makeText(getApplicationContext(),"Gonna send Create user request!",Toast.LENGTH_SHORT).show();
 
             // Request a string response from the provided URL.

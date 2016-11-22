@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
 
         public void run() {
 
-            String url = "http://10.196.4.62:8000/MovieApp/getRecommendations";
+            String url = "http://shunyaapp.azurewebsites.net"+"/MovieApp/getRecommendations";
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
                         public void onResponse(String json) {
                             // Display the response string.
                             ///////////////////////////////////////////////////////
-                            Log.e("HERE in rreco","ggg");
+                            Log.e("JSON FOR RECO",json);
 
                             try {
                                 ViewGroup movielist = (ViewGroup)findViewById(R.id.movieList);

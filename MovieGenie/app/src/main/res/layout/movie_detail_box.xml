@@ -18,32 +18,6 @@
             android:textColor="@color/cardview_dark_background"
             android:id="@+id/movieName" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:textColor="@color/black"
-                android:id="@+id/rating"
-                android:textSize="16sp"
-                android:layout_weight="0.3"
-                android:text="Rating"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:layout_weight="0.2"
-                android:text="TotalUsers"
-                android:layout_toLeftOf="@id/rating"
-                android:id="@+id/totalUsers"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
         <TextView
             android:text="Genres"
             android:layout_width="match_parent"
@@ -52,12 +26,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/genres" />
 
-        <TextView
-            android:text="Cast"
-            android:layout_width="match_parent"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:layout_height="wrap_content"
-            android:id="@+id/cast" />
+        <!--<TextView-->
+            <!--android:text="Cast"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="16sp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/cast" />-->
 
     </LinearLayout>
