@@ -13,4 +13,6 @@
     tools:context="com.shunya.moviegenie.MovieDetailActivity"
     tools:showIn="@layout/activity_movie_detail">
 
+    <include layout="@layout/single_movie_detail" />
+
 </RelativeLayout>

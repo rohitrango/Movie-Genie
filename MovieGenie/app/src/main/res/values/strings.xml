@@ -14,14 +14,14 @@
         completions."
     </string>
     <string name="facebook_app_id">860837764018708</string>
-    <string name="title_activity_main">View list of movies</string>
+    <string name="title_activity_main">Recommendations</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_pref">My preferences</string>
     <string name="title_activity_chat_box_list">My chats</string>
-    <string name="title_activity_movie_detail">Details for Movie</string>
-    <string name="title_activity_chat_box_detail">ChatBoxDetailActivity</string>
-    <string name="title_activity_notifications">NotificationsActivity</string>
+    <string name="title_activity_movie_detail">Details for </string>
+    <string name="title_activity_chat_box_detail">Chatbox</string>
+    <string name="title_activity_notifications">My notifications</string>
     <string name="api_url" formatted="false">"http://shunyaapp.azurewebsites.net"</string>
 </resources>

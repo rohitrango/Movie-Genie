@@ -39,6 +39,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,11 +78,13 @@ public class MainActivity extends AppCompatActivity
                                     View childLayout = inflater.inflate(R.layout.movie_detail_box,null);
 
                                     JSONObject responseObj = (JSONObject)(response.get(i));
+                                    JSONObject fields = (JSONObject)(responseObj.get("fields"));
+
                                     final int moviePk = responseObj.getInt("pk");
 
                                     // name of movie -> clickable, send to the clickable
                                     TextView t = (TextView)(childLayout.findViewById(R.id.movieName));
-                                    t.setText(  responseObj.getString("name") );
+                                    t.setText(  fields.getString("name") );
                                     t.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -91,12 +95,16 @@ public class MainActivity extends AppCompatActivity
                                         }
                                     });
 
-                                     //  // rating
-                                    t = (TextView)childLayout.findViewById(R.id.rating);
-                                    t.setText("Rating: " + Integer.toString(responseObj.getInt("ratings")) );
+                                     //  genres
+                                    JSONArray genreJsonList = (JSONArray)fields.getJSONArray("genre");
+                                    String genreList = "Genres: ";
+                                    for(int ii=0;ii < genreJsonList.length()-1; ii++)
+                                        genreList += (String)(genreJsonList.getString(ii)) + ", ";
+                                    genreList += (String)(genreJsonList.getString(genreJsonList.length()-1));
+
+                                    t = (TextView)childLayout.findViewById(R.id.genres);
+                                    t.setText(genreList);
                                     movielist.addView(childLayout);
-
-
                                 }
 
                             } catch (JSONException e) {

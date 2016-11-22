@@ -17,5 +17,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#aaaaaa</item>
+        <item name="colorControlActivated">#F0E68C</item>
+    </style>
 
 </resources>
