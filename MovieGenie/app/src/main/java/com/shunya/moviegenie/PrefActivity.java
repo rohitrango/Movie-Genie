@@ -257,6 +257,7 @@ public class PrefActivity extends AppCompatActivity {
                                     String s = re.getString("status");
                                     if(s.equals("yes")) {
                                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                        intent.putExtra("fb_id",final_fbid);
                                         startActivity(intent);
                                         finish();
                                     }

@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 Log.e(response,"response");
                                 String status = jsonObject.getString("status");
                                 Intent intent;
-                                if(status == "yes") {
+                                if(status.equals("yes")) {
                                     intent = new Intent(getApplicationContext(),MainActivity.class);
                                 }
                                 else {
@@ -145,6 +145,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             requestQueue.add(stringRequest);
             Log.e("LOGGED","logged");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override
